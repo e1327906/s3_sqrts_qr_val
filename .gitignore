@@ -1,0 +1,8 @@
+*.class
+*.log
+*.iml
+.idea
+target
+.camel
+processed
+*.properties

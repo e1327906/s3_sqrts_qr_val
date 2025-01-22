@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qr-val-deployment
+  labels:
+    app: qr-val-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qr-val-app
+  template:
+    metadata:
+      labels:
+        app: qr-val-app
+    spec:
+      containers:
+        - name: qr-val-container
+          image: e1327906/qr_val:latest
+          ports:
+            - containerPort: 8080
+          #env:
+            #- name: SPRING_PROFILES_ACTIVE
+              #value: "default" # Optional: set Spring profile
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: qr-val-service
+spec:
+  selector:
+    app: qr-val-app
+  ports:
+    - protocol: TCP
+      port: 8073        # Port on which the service will be exposed
+      targetPort: 8073  # Port on which the container is listening
+      nodePort: 30300   # The port on the Node (host) that will be exposed
+  type: NodePort        # Service type to expose the application on a specific Node port
