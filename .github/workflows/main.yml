@@ -10,6 +10,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: # Specify permissions for the GITHUB_TOKEN
+      contents: read      # For accessing repository contents
+      security-events: write  # For uploading SARIF files for code scanning
     steps:
       - uses: actions/checkout@v3
 
@@ -62,7 +65,7 @@ jobs:
         env:
           GIT_HUB_TOKEN: ${{ secrets.GIT_HUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -DskipTests -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=e1327906_sqrts_qr_val
+        run: mvn -DskipTests -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=e1327906_s3_sqrts_qr_val
   snyk:
     needs: build
     runs-on: ubuntu-latest
