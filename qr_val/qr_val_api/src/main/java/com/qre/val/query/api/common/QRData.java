@@ -52,4 +52,7 @@ public class QRData implements Serializable {
 
     @JsonProperty(JsonFieldName.TRANSACTION_DATA)
     private TransactionData transactionData;
+
+    @JsonProperty(JsonFieldName.STATUS)
+    private Integer status;
 }

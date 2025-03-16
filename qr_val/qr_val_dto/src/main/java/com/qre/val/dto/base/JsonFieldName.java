@@ -73,4 +73,5 @@ public class JsonFieldName {
     public static final String JOURNEY_ID = "journeyId";
     public static final String ACCESS_TOKEN = "accessToken";
     public static final String REFRESH_TOKEN = "refreshToken";
+    public static final String IS_UPDATED_STATUS = "isUpdatedStatus";
 }

@@ -111,4 +111,39 @@ public class QRValidatorServiceImpl implements QRValidatorService {
         // Send ticket data to ticket validation service
         messageService.send(queue, new ObjectMapper().writeValueAsString(updateStatusRequest));
     }
+
+    @Override
+    public QRData getTicketDetail(ValidationRequest request) throws Exception {
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        String[] dataList = request.getQrData().split("#");
+        if (dataList.length < 2) {
+            throw new IllegalArgumentException("Invalid QR data");
+        }
+
+        //String digitalSignature = dataList[0];
+        String qrData = dataList[1];
+        byte[] decodedQRData = Base64.getDecoder().decode(qrData);
+        String decryptData = crypto.aesDecrypt(decodedQRData, applicationProperties.getPrivateKeyPath());
+        logger.info("QRValidatorServiceImpl.validate decryptData : {}", decryptData);
+
+        ValidationData validationData = mapper.readValue(decryptData, ValidationData.class);
+        QRData qrValidationData = validationData.getQRData();
+
+        Optional<TicketMaster> ticketMasterOpt = ticketMasterRepository.findAllBySerialNumber(qrValidationData.getSerialNumber());
+        if (ticketMasterOpt.isEmpty()) {
+            throw new InvalidTicketException("Invalid ticket[" + qrValidationData.getSerialNumber() + "]");
+        }
+
+        TicketMaster ticketMaster = ticketMasterOpt.get();
+        Optional<JourneyDetails> journeyDetailsOpt = ticketMaster.getJourneyDetails().stream().findFirst();
+        if (journeyDetailsOpt.isEmpty()) {
+            throw new InvalidTicketException("Invalid journey of ticket [" + qrValidationData.getSerialNumber() + "]");
+        }
+        qrValidationData.setStatus(TicketStatusEnum.ACTIVE.getValue());
+        return qrValidationData;
+
+    }
 }

@@ -8,4 +8,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface QRValidatorController {
 
     ResponseEntity<APIResponse> validate(@RequestBody ValidationRequest request) throws Exception;
+    ResponseEntity<APIResponse> getTicketDetail(@RequestBody ValidationRequest request) throws Exception;
 }

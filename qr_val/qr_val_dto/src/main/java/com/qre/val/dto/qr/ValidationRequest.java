@@ -26,5 +26,4 @@ public class ValidationRequest implements Serializable {
 
     @JsonProperty(JsonFieldName.EXIT_DATE_TIME)
     private long exitDateTime;
-
 }
